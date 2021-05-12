@@ -1,0 +1,44 @@
+from socket import *
+from middlewares.auth import auth
+
+serverPort = 8080
+serverSocket = socket(AF_INET, SOCK_STREAM)
+serverSocket.bind(("0.0.0.0", serverPort))
+serverSocket.listen(1)
+
+print("Server listening on port", serverPort)
+
+while True:
+    connectionSocket, addr = serverSocket.accept()
+    
+    isLogged = False
+    connectionSocket.sendall("2J".encode())
+
+
+    while(isLogged == False):
+        connectionSocket.sendall('\nwelcome to the chat, please, log in\n\n'.encode())
+
+
+        connectionSocket.sendall('login: '.encode())
+        login = connectionSocket.recv(1024).decode()
+
+        connectionSocket.sendall('password: '.encode())
+        password = connectionSocket.recv(1024).decode()
+
+        if auth(login, password) != True:
+            connectionSocket.sendall("\u001B[2J".encode())
+            connectionSocket.sendall('\nwrong login or password, try again\n\n'.encode())
+        else:
+            isLogged = True
+
+    connectionSocket.sendall('\nwelcome back, ' + str(login) + '!'.encode())
+
+
+    request = connectionSocket.recv(1024).decode()
+    response = "Recebi o request: " + str(request)
+
+    connectionSocket.sendall(response.encode())
+
+    connectionSocket.close()
+
+serverSocket.close()
