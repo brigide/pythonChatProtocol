@@ -1,5 +1,5 @@
 from socket import *
-from middlewares.auth import auth
+#from middlewares.auth import auth
 
 serverPort = 8080
 serverSocket = socket(AF_INET, SOCK_STREAM)
@@ -12,7 +12,6 @@ while True:
     connectionSocket, addr = serverSocket.accept()
     
     isLogged = False
-    connectionSocket.sendall("\u001B[2J".encode())
 
     request = connectionSocket.recv(1024).decode()
     response = "Connected: " + str(request)
