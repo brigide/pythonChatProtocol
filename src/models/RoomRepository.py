@@ -20,7 +20,7 @@ class RoomRepository:
         
             for room in data:
                 if room['name'] == name: 
-                    return name 
+                    return room 
 
         return
 

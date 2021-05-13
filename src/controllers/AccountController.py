@@ -36,6 +36,7 @@ class AccountController:
             return 'user not found'
 
         self.user.isLogged = False
+        self.user.room = ""
 
         self.userRepository.update(self.user)
 

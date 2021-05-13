@@ -13,6 +13,7 @@ class Server:
         self.socket = ""
         self.conn = ""
         self.addr = ""
+        self.account = ""
 
 
     def createSocket(self):
@@ -61,6 +62,8 @@ class Server:
 
     def sendMessage(self, message):
         message += '\n'
+        #message = message.center(100)
+        print(message)
         self.conn.sendall(message.encode())
 
 

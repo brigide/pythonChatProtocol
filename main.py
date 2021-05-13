@@ -1,8 +1,6 @@
 from Server import Server
 import sys
 
-from src.middlewares.requestHandler import requestHandler
-
 def main():
     host = "0.0.0.0"
 

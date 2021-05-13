@@ -10,7 +10,10 @@ class UserController:
         pass
 
 
-    def index(self):
+    def index(self, status = None):
+        if status == 'online':
+            return self.userRepository.fetchLogged()
+
         return self.userRepository.fetchAll()
 
     

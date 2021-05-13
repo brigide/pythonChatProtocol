@@ -2,7 +2,13 @@
     {
         "username": "brigide",
         "password": "123",
-        "isLogged": true,
+        "isLogged": false,
         "room": ""
+    },
+    {
+        "username": "tito",
+        "password": "123",
+        "isLogged": true,
+        "room": "myRoom"
     }
 ]

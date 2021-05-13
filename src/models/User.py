@@ -4,7 +4,7 @@ class User:
         self.username = username
         self.password = password
         self.isLogged = False
-        self.room = None
+        self.room = ""
 
     def getUser(self):
         user = {
@@ -27,7 +27,7 @@ class User:
     def isLogged(self):
         return self.isLogged
 
-    @isLogger.setter
+    @isLogged.setter
     def isLogged(self, isLogged):
         self.isLogged = isLogged
 
