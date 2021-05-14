@@ -9,6 +9,6 @@
         "username": "tito",
         "password": "123",
         "isLogged": false,
-        "room": "myRoom"
+        "room": ""
     }
 ]

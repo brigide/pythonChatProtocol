@@ -19,7 +19,7 @@ class AccountController:
         if user == None:
             return 'user not found'
 
-        if password != self.user.password:
+        if user['password'] != self.user.password:
             return 'incorrect password'
         
         self.user.isLogged = True

@@ -17,33 +17,33 @@ class User:
 
     @property
     def username(self):
-        return self.username
+        return self._username
 
     @username.setter
     def username(self, username):
-        self.username = username
+        self._username = username
 
     @property
     def password(self):
-        return self.password
+        return self._password
 
     @password.setter
     def password(self, password):
-        self.password = password
+        self._password = password
 
     @property
     def isLogged(self):
-        return self.isLogged
+        return self._isLogged
 
     @isLogged.setter
     def isLogged(self, isLogged):
-        self.isLogged = isLogged
+        self._isLogged = isLogged
 
     @property
     def room(self):
-        return self.room
+        return self._room
 
     @room.setter
     def room(self, room):
-        self.room = room
+        self._room = room
 

@@ -36,12 +36,20 @@ def requestHandler(request):
 
         return 'exit'
 
+    
+    if request[0] == 'login':
 
-    # if request[0] == 'uindex':
-    #     users = userController.index()
-    #     print(users)
-    #     response = setTitle('all users') + userView.renderMany(users)
-    #     return response
+        if len(request) > 1:
+            return invalidArgMsg
+
+        return 'login'
+
+
+    if request[0] == 'uindex':
+        users = userController.index()
+        print(users)
+        response = setTitle('all users') + userView.renderMany(users)
+        return response
 
     # if request[0] == 'ulindex':
     #     users = userController.index('online')

@@ -1,2 +1,0 @@
-def routes(server, request):
-

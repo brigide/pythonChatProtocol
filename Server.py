@@ -5,6 +5,7 @@ import time
 from src.middlewares.display import *
 from src.middlewares.requestHandler import *
 from src.controllers.AccountController import *
+from protocols import protocols
 
 
 class Server:
@@ -54,12 +55,15 @@ class Server:
 
             response = requestHandler(request)
 
-            if len(response) > 1 and response[0] == 'login':
-                username = request[1]
-                password = request[2]
-                account = AccountController(username, password)
+            if response == 'login':
+                username = self.waitMessage('login: ')
 
-                response = account.login()
+                password = self.waitMessage('password: ' + displayColor('black'))
+                self.sendMessage(displayColor('white'))
+
+                self.account = AccountController(username, password)
+
+                response = self.account.login()
 
 
             if response == 'exit':
@@ -78,8 +82,8 @@ class Server:
         self.conn.sendall(message.encode())
 
 
-    def waitMessage(self):
-        self.conn.sendall('chat> '.encode())
+    def waitMessage(self, prefix = 'chat> '):
+        self.conn.sendall(prefix.encode())
         message = self.conn.recv(1024).decode()   
         message = re.sub(r'\r\n', '', message)
         return message
