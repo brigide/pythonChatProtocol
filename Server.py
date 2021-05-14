@@ -1,8 +1,10 @@
 from socket import *
 import re
+import time
 
 from src.middlewares.display import *
 from src.middlewares.requestHandler import *
+from src.controllers.AccountController import *
 
 
 class Server:
@@ -31,14 +33,16 @@ class Server:
 
             print('server listening on port: ' + str(self.port))
 
-        except error as message:
+        except OSError as message:
             print('socket binding error: ' + str(message))
-            print('retrying...')
+            print('retrying in 3 seconds...\n')
+            time.sleep(3)
             self.bindSocket()
 
 
     def acceptConnection(self):
         self.conn, self.addr = self.socket.accept()
+        print('\n' + str(self.addr) + ' connected')
 
     
     def init(self):
@@ -49,6 +53,14 @@ class Server:
             request = self.waitMessage()
 
             response = requestHandler(request)
+
+            if len(response) > 1 and response[0] == 'login':
+                username = request[1]
+                password = request[2]
+                account = AccountController(username, password)
+
+                response = account.login()
+
 
             if response == 'exit':
                 self.sendMessage(clearScreen())
@@ -63,7 +75,6 @@ class Server:
     def sendMessage(self, message):
         message += '\n'
         #message = message.center(100)
-        print(message)
         self.conn.sendall(message.encode())
 
 
@@ -75,6 +86,7 @@ class Server:
 
     
     def closeConnection(self):
+        print('\n' + str(self.addr) + ' disconnected')
         self.conn.close()
 
     def closeSocket(self):

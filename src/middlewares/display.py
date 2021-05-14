@@ -27,3 +27,8 @@ def displayColor(color):
 
 def clearScreen():
     return '\u001B[2J'
+
+def setTitle(title):
+    title = displayColor('magenta') + f'\n        {title}\n'
+    title += '        ' + '-' * 30 + '\n\n' + displayColor('white')
+    return title

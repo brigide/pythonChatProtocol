@@ -19,9 +19,17 @@ class User:
     def username(self):
         return self.username
 
+    @username.setter
+    def username(self, username):
+        self.username = username
+
     @property
     def password(self):
         return self.password
+
+    @password.setter
+    def password(self, password):
+        self.password = password
 
     @property
     def isLogged(self):

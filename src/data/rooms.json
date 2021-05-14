@@ -2,37 +2,6 @@
     {
         "name": "myRoom",
         "admin": "brigide",
-        "users": [
-            {
-                "username": "tito",
-                "password": "123",
-                "isLogged": true,
-                "room": "myRoom"
-            },
-            {
-                "username": "tito",
-                "password": "123",
-                "isLogged": true,
-                "room": "myRoom"
-            }
-        ]
-    },
-    {
-        "name": "myRoom",
-        "admin": "brigide",
-        "users": [
-            {
-                "username": "tito",
-                "password": "123",
-                "isLogged": true,
-                "room": "myRoom"
-            },
-            {
-                "username": "tito",
-                "password": "123",
-                "isLogged": true,
-                "room": "myRoom"
-            }
-        ]
+        "users": []
     }
 ]
