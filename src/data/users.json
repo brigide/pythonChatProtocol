@@ -10,5 +10,23 @@
         "password": "123",
         "isLogged": false,
         "room": ""
+    },
+    {
+        "username": "jao",
+        "password": "123",
+        "isLogged": false,
+        "room": ""
+    },
+    {
+        "username": "epilef",
+        "password": "123",
+        "isLogged": false,
+        "room": ""
+    },
+    {
+        "username": "ed",
+        "password": "123",
+        "isLogged": false,
+        "room": ""
     }
 ]

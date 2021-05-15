@@ -5,10 +5,12 @@ import time
 from src.middlewares.display import *
 from src.middlewares.requestHandler import *
 from src.controllers.AccountController import *
+from src.controllers.UserController import *
 from protocols import protocols
 
 
 class Server:
+    userController = UserController()
 
     def __init__(self, host, port):
         self.host = host
@@ -80,6 +82,33 @@ class Server:
                 if response == successMsg('logged out succefully'):
                     self.prefix = displayColor('cyan') + 'chat@' 
                     self.prefix += displayColor('cyan') + 'unknown' + displayColor('white')
+
+
+            if response == 'create user':
+
+                if self.account.user != '':
+                    response = errorMsg('you cannot create new account while logged')
+                else:
+                    username = self.waitMessage('\nlogin: ')
+
+                    password = self.waitMessage('password: ' + displayColor('black'))
+                    self.sendMessage(displayColor('white'))
+
+                    passwordConfirmation = self.waitMessage('confirm password: ' + displayColor('black'))
+                    self.sendMessage(displayColor('white'))
+
+                    if password != passwordConfirmation:
+                        response = errorMsg('password does not match its confirmation')
+                    else:
+                        user = User(username, password)
+                        response = self.userController.create(user)
+
+
+
+
+            if response == 'create room':
+                pass
+
 
             if response == 'exit':
                 self.sendMessage(clearScreen())

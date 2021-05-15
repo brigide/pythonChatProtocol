@@ -15,7 +15,7 @@ class AccountController:
         user = self.userRepository.findByUsername(self.user.username)
 
         if user == None:
-            return errorMsg('user not found')
+            return errorMsg('user not found, use "create account" to register a new account')
 
         if user['password'] != self.user.password:
             return errorMsg('incorrect password')

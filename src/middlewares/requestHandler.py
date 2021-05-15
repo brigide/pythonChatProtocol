@@ -10,17 +10,11 @@ def requestHandler(request):
     roomController = RoomController()
     request = request.split()
 
-    invalidArgMsg = '\n' + errorMsg('client request does not accept additional arguments for this command')
-    invalidArgMsg += 'please use "help" to learn more about commands\n'
-
-    unknownCmdMsg = '\n' + errorMsg('unknown command')
-    unknownCmdMsg += 'please use "help" to learn more about commands\n'
-
 
     if request[0] == 'clear':
         
         if len(request) > 1:
-            return invalidArgMsg
+            return tooManyArgs()
 
         return clearScreen()
 
@@ -28,7 +22,7 @@ def requestHandler(request):
     if request[0] == 'exit':
 
         if len(request) > 1:
-            return invalidArgMsg
+            return tooManyArgs()
 
         return 'exit'
 
@@ -36,7 +30,7 @@ def requestHandler(request):
     if request[0] == 'login':
 
         if len(request) > 1:
-            return invalidArgMsg
+            return tooManyArgs()
 
         return 'login'
 
@@ -44,16 +38,32 @@ def requestHandler(request):
     if request[0] == 'logout':
 
         if len(request) > 1:
-            return invalidArgMsg
+            return tooManyArgs()
 
         return 'logout'
 
 
     if request[0] == 'uindex':
         users = userController.index()
-        print(users)
         response = setTitle('all users') + userView.renderMany(users)
         return response
+
+
+    if request[0] == 'create':
+
+        if len(request) < 2:
+            return missingArgs()
+
+        if len(request) > 2:
+            return tooManyArgs(2)
+
+        if request[1] == 'user':
+            return 'create user'
+
+        if request[1] == 'room':
+            return 'create room'
+
+        return unknownArgMsg() 
 
     # if request[0] == 'ulindex':
     #     users = userController.index('online')
@@ -93,4 +103,4 @@ def requestHandler(request):
     #     response = title + roomView.renderOne(room)
     #     return response
 
-    return unknownCmdMsg
+    return unknownCmdMsg()

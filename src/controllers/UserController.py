@@ -1,5 +1,6 @@
 from src.models.User import User
 from src.models.UserRepository import UserRepository
+from src.middlewares.display import *
 import json 
 
 
@@ -28,11 +29,11 @@ class UserController:
 
     def create(self, user):
         if self.userRepository.findByUsername(user.username) != None:
-            return 'username already in use'
+            return errorMsg('username already in use')
 
         self.userRepository.save(user)
 
-        return 'user created succefully'
+        return successMsg('user created succefully')
 
     
     def update(self, user):

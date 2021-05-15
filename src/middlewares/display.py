@@ -38,5 +38,35 @@ def setTitle(title):
 def errorMsg(message):
     return displayColor('red') + message + '\n' + displayColor('white')
 
+
 def successMsg(message):
     return displayColor('green') + message + '\n' + displayColor('white')
+
+
+def unknownCmdMsg():
+    unknownCmdMsg = '\n' + errorMsg('unknown command')
+    unknownCmdMsg += 'please use "help" to learn more about commands\n'
+    return unknownCmdMsg
+
+
+def tooManyArgs(numArgs = 0):
+
+    if numArgs == 0:
+        tooManyArgs = '\n' + errorMsg('client request does not accept additional arguments for this command')
+    else:
+        tooManyArgs = '\n' + errorMsg('client request does not accept more than ' + str(numArgs) + ' arguments for this command')
+        
+    tooManyArgs += 'please use "help" to learn more about commands\n'
+    return tooManyArgs
+
+
+def missingArgs():
+    missingArgs = '\n' + errorMsg('client request needs additional arguments for this command')
+    missingArgs += 'please use "help" to learn more about commands\n'
+    return missingArgs
+
+
+def unknownArgMsg():
+    unknownArgMsg = '\n' + errorMsg('unknown arguments for this command')
+    unknownArgMsg += 'please use "help" to learn more about commands\n'
+    return unknownArgMsg
