@@ -10,15 +10,11 @@ def requestHandler(request):
     roomController = RoomController()
     request = request.split()
 
-    invalidArgMsg = displayColor('red')
-    invalidArgMsg += '\nclient request does not accept additional arguments for this command\n'
-    invalidArgMsg += displayColor('white')
-    invalidArgMsg += 'please use "help" to learn more about commands'
+    invalidArgMsg = '\n' + errorMsg('client request does not accept additional arguments for this command')
+    invalidArgMsg += 'please use "help" to learn more about commands\n'
 
-    unknownCmdMsg = displayColor('red')
-    unknownCmdMsg += '\nunknown command\n'
-    unknownCmdMsg += displayColor('white')
-    unknownCmdMsg += 'please use "help" to learn more about commands'
+    unknownCmdMsg = '\n' + errorMsg('unknown command')
+    unknownCmdMsg += 'please use "help" to learn more about commands\n'
 
 
     if request[0] == 'clear':
@@ -43,6 +39,14 @@ def requestHandler(request):
             return invalidArgMsg
 
         return 'login'
+
+    
+    if request[0] == 'logout':
+
+        if len(request) > 1:
+            return invalidArgMsg
+
+        return 'logout'
 
 
     if request[0] == 'uindex':

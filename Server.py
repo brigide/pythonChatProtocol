@@ -16,7 +16,9 @@ class Server:
         self.socket = ""
         self.conn = ""
         self.addr = ""
-        self.account = ""
+        self.account = AccountController()
+        self.prefix = displayColor('cyan') + 'chat@' 
+        self.prefix += displayColor('cyan') + 'unknown' + displayColor('white')
 
 
     def createSocket(self):
@@ -56,19 +58,38 @@ class Server:
             response = requestHandler(request)
 
             if response == 'login':
-                username = self.waitMessage('login: ')
+                username = self.waitMessage('\nlogin: ')
 
                 password = self.waitMessage('password: ' + displayColor('black'))
                 self.sendMessage(displayColor('white'))
 
-                self.account = AccountController(username, password)
+                if self.account.user == '':
+                    self.account.user = User(username, password)
 
                 response = self.account.login()
 
+                if response == successMsg('logged in succefully'):
+                    self.prefix = displayColor('cyan') + 'chat@' 
+                    self.prefix += displayColor('yellow') + self.account.user.username
+                    self.prefix += displayColor('white')
+
+            
+            if response == 'logout':
+                response = self.account.logout()
+
+                if response == successMsg('logged out succefully'):
+                    self.prefix = displayColor('cyan') + 'chat@' 
+                    self.prefix += displayColor('cyan') + 'unknown' + displayColor('white')
 
             if response == 'exit':
                 self.sendMessage(clearScreen())
-                self.sendMessage(displayColor('red') + 'goodbye\n' + displayColor('white'))
+                self.sendMessage(displayColor('red') + 'goodbye' + displayColor('white'))
+                if self.account.user != '':
+                    username = self.account.user.username
+                response = self.account.logout()
+
+                if response == successMsg('logged out succefully'):
+                    self.sendMessage(username + ' ' + response +'\n')
                 break
 
             self.sendMessage(response)
@@ -82,7 +103,9 @@ class Server:
         self.conn.sendall(message.encode())
 
 
-    def waitMessage(self, prefix = 'chat> '):
+    def waitMessage(self, prefix = ''):
+        if prefix == '':
+            prefix = f'{self.prefix}> '
         self.conn.sendall(prefix.encode())
         message = self.conn.recv(1024).decode()   
         message = re.sub(r'\r\n', '', message)

@@ -28,7 +28,15 @@ def displayColor(color):
 def clearScreen():
     return '\u001B[2J'
 
+
 def setTitle(title):
     title = displayColor('magenta') + f'\n        {title}\n'
     title += '        ' + '-' * 30 + '\n\n' + displayColor('white')
     return title
+
+
+def errorMsg(message):
+    return displayColor('red') + message + '\n' + displayColor('white')
+
+def successMsg(message):
+    return displayColor('green') + message + '\n' + displayColor('white')
