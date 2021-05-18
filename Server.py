@@ -6,7 +6,6 @@ from src.middlewares.display import *
 from src.middlewares.requestHandler import *
 from src.controllers.AccountController import *
 from src.controllers.UserController import *
-from protocols import protocols
 
 
 class Server:
