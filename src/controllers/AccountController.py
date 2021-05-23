@@ -14,14 +14,17 @@ class AccountController:
     def login(self):
         user = self.userRepository.findByUsername(self.user.username)
 
+        if self.user.isLogged == True:
+            return errorMsg('you are already logged in')
+
         if user == None:
             return errorMsg('user not found, use "create account" to register a new account')
 
         if user['password'] != self.user.password:
             return errorMsg('incorrect password')
 
-        if self.user.isLogged == True:
-            return errorMsg(self.user.username + ' already logged in')
+        if user['isLogged'] == True:
+            return errorMsg(user['username'] + ' already logged in')
         
         self.user.isLogged = True
 

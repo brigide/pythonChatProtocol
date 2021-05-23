@@ -1,28 +1,33 @@
 from Server import Server
 import sys
+import _thread
 
 def main():
-    host = "0.0.0.0"
+    """
+        app startup function
+        this function controls the server and client threads
+    """
 
+    host = "0.0.0.0" #defines localhost ip for the server
+
+    #condition to recieve the port from system args (8080 if none is passed)
     if len(sys.argv) == 1:
         port = 8080
     else:
         port = int(sys.argv[1])
 
-    server = Server(host, port)
+    server = Server(host, port) #create server instance
 
-    server.createSocket()
-    server.bindSocket()
+    server.createSocket() #create server's socket
+    server.bindSocket() #actually create socket's connection
 
+    #main loop to accept many connections
     while True:
-        server.acceptConnection()
+        conn, addr = server.acceptConnection() #get connection class and address from new client
+  
+        _thread.start_new_thread(server.run, (conn, addr)) #start new thread for client
 
-        server.init()
-
-        server.closeConnection()
-
-    server.closeSocket()
-
+    server.closeSocket() #close socket after loop
 
 
 if __name__ == "__main__":

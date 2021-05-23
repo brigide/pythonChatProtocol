@@ -28,5 +28,11 @@
         "password": "123",
         "isLogged": false,
         "room": ""
+    },
+    {
+        "username": "luqueta",
+        "password": "123",
+        "isLogged": false,
+        "room": ""
     }
 ]
