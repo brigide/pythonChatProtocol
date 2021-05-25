@@ -4,24 +4,37 @@ class Room:
         self.name = name
         self.admin = admin
         self.users = []
-        users.append(admin)
+        self.conns = []
         
 
     def getRoom(self):
         room = {
             "name": self.name,
             "admin": self.admin,
-            "users": self.users
+            "users": self.users,
+            "conns": self.conns
         }
         return room
 
     @property
     def name(self):
-        return self.name
+        print(self.name)
+        print(self._name)
+        return self._name
+
+    @name.setter
+    def name(self, name):
+        print(self.name)
+        print(self._name)
+        self._name = name
 
     @property
     def admin(self):
-        return self.admin
+        return self._admin
+
+    @admin.setter
+    def admin(self, admin):
+        self._admin = admin
 
     @property
     def users(self):
@@ -30,3 +43,7 @@ class Room:
     @users.setter
     def users(self, user):
         self.users.append(user)
+
+    @property
+    def conns(self):
+        return self.conns

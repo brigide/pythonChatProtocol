@@ -22,13 +22,13 @@ class RoomRepository:
                 if room['name'] == name: 
                     return room 
 
-        return
+        return None
 
 
     def save(self, room):
         room = room.getRoom()
         with open("src/data/rooms.json", "r") as file:
-            #print(user)
+            print(room)
             data = json.load(file) 
             data.append(room) 
 

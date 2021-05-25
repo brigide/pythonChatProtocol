@@ -44,6 +44,9 @@ def requestHandler(request):
 
 
     if request[0] == 'uindex':
+        if len(request) > 1:
+            return tooManyArgs(1)
+
         users = userController.index()
         response = setTitle('all users') + userView.renderMany(users)
         return response
@@ -65,21 +68,35 @@ def requestHandler(request):
 
         return unknownArgMsg() 
 
+
     if request[0] == 'ulindex':
+
+        if len(request) > 1:
+            return tooManyArgs(1)
+
         users = userController.index('online')
-        print(users)
-        title = displayColor('magenta') + '\n        online users\n'
-        title += '        ' + '-' * 30 + '\n\n' + displayColor('white')
-        response = title + userView.renderMany(users)
+        if users == 'no online users':
+            return errorMsg('no online users')
+
+        response = setTitle('online users') + userView.renderMany(users)
         return response
 
+
     if request[0] == 'ushow':
+
+        if len(request) > 2:
+            return tooManyArgs(2)
+
+        if len(request) < 2:
+            return missingArgs()
+
         username = request[1]
         user = userController.show(username)
-        print(user)
-        title = displayColor('magenta') + '\n        user\n'
-        title += '        ' + '-' * 30 + '\n\n' + displayColor('white')
-        response = title + userView.renderOne(user)
+        
+        if user == 'user not found':
+            return errorMsg('user not found')
+
+        response = setTitle('user') + userView.renderOne(user)
         return response
 
 
@@ -88,10 +105,8 @@ def requestHandler(request):
 
     if request[0] == 'rindex':
         rooms = roomController.index()
-        print(rooms[0]['users'])
-        title = displayColor('magenta') + '\n        all rooms\n'
-        title += '        ' + '-' * 30 + '\n\n' + displayColor('white')
-        response = title + roomView.renderMany(rooms)
+        
+        response = setTitle('all rooms') + roomView.renderMany(rooms)
         return response
 
     if request[0] == 'rshow':

@@ -23,11 +23,17 @@ def main():
 
     #main loop to accept many connections
     while True:
-        conn, addr = server.acceptConnection() #get connection class and address from new client
+        try:
+            conn, addr = server.acceptConnection() #get connection class and address from new client
   
-        _thread.start_new_thread(server.run, (conn, addr)) #start new thread for client
+            _thread.start_new_thread(server.run, (conn, addr)) #start new thread for client
 
-    server.closeSocket() #close socket after loop
+        except KeyboardInterrupt:
+            break
+
+    print('closing socket and shutting down server...')
+    server.closeServer()
+    print('goodbye!') #close socket after loop
 
 
 if __name__ == "__main__":

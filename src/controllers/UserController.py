@@ -38,17 +38,30 @@ class UserController:
     
     def update(self, user):
         if self.userRepository.findByUsername(user.username) == None:
-            return 'user not found'
+            return errorMsg('user not found')
         
         self.userRepository.update(user)
 
-        return 'user updated succefully'
+        return successMsg('user updated succefully')
 
 
     def delete(self, user):
         if self.userRepository.findByUsername(user.username) == None:
-            return 'user not found'
+            return errorMsg('user not found')
 
         self.userRepository.delete(user)
 
-        return 'user removed succefully'
+        return successMsg('user removed succefully')
+
+
+    def logoutAll(self):
+        """
+            method to set all users offline
+            prevent any bug and crash some user's login
+        """
+        users = self.userRepository.fetchLogged()
+        if users != 'no online users':
+            for user in users:
+                user['isLogged'] == False
+                usr = User(user['username'], user['password'])
+                self.userRepository.update(usr)

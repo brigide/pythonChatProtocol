@@ -1,5 +1,6 @@
 from src.models.Room import Room
 from src.models.RoomRepository import RoomRepository
+from src.middlewares.display import *
 import json 
 
 
@@ -18,33 +19,35 @@ class RoomController:
         room = self.roomRepository.findByName(name)
 
         if room == None:
-            return 'room not found'
+            return errorMsg('room not found')
         
         return room
 
 
     def create(self, room):
+        print('cheguei')
         if self.roomRepository.findByName(room.name) != None:
-            return 'room name already in use'
+            return errorMsg('room name already in use')
 
+        
         self.roomRepository.save(room)
 
-        return 'room created succefully'
+        return successMsg('room created succefully')
 
     
     def update(self, room):
         if self.roomRepository.findByName(room.name) == None:
-            return 'room not found'
+            return errorMsg('room not found')
         
         self.roomRepository.update(room)
 
-        return 'room updated succefully'
+        return successMsg('room updated succefully')
 
 
     def delete(self, room):
         if self.roomRepository.findByName(room.name) == None:
-            return 'room not found'
+            return errorMsg('room not found')
 
         self.roomRepository.delete(room)
 
-        return 'room removed succefully'
+        return successMsg('room removed succefully')

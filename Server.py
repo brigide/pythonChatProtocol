@@ -9,12 +9,16 @@ from src.middlewares.display import *
 from src.middlewares.requestHandler import *
 from src.controllers.AccountController import *
 from src.controllers.UserController import *
+from src.controllers.RoomController import *
+from src.models.User import *
+from src.models.Room import *
 
 class Server:
     """
         main server class 
     """
     userController = UserController() #create instance of user controller
+    roomController = RoomController() #create instance of room controller
 
     def __init__(self, host, port):
         """
@@ -71,7 +75,7 @@ class Server:
             and return it's response
         """
         account = AccountController() #create an instance of current client account
-        prefix = self.setPrefix(account) #set prefix
+        prefix = setPrefix(account) #set prefix
 
         #shows title in client
         self.sendMessage(conn, clearScreen())
@@ -83,116 +87,138 @@ class Server:
                 this loop handle client requests until
                 it sends command to break and exit the app
             """
+            try:
+                request = self.waitMessage(conn, prefix) #recieves request from client
+                if request:
 
-            request = self.waitMessage(conn, prefix) #recieves request from client
+                    if account.user != '':
+                        message = displayColor('magenta') + account.user.username
+                        message += displayColor('white') + '> ' + request
+                        print(message)
+                        self.broadcast(conn, message)
 
-            response = requestHandler(request) #handles and filters the request
-
-
-            if response == 'login':
-                """
-                    condition to login an existing user
-                """
-                username = self.waitMessage(conn, '\nlogin: ')
-
-                password = self.waitMessage(conn, 'password: ' + displayColor('black'))
-                self.sendMessage(conn, displayColor('white'))
-
-                #if there is no user logged, create User instance
-                if account.user == '':
-                    account.user = User(username, password)
-
-                response = account.login() #realizes login
-
-                #verify if login was succeful
-                if response != successMsg('logged in succefully'):
-                    if response != errorMsg('you are already logged in'):
-                        account.user = ''
-
-                prefix = self.setPrefix(account)
+                    response = requestHandler(request) #handles and filters the request
 
 
-            
-            if response == 'logout':
-                """
-                    condition to loggout a logged user
-                """
-                response = account.logout() #realizes logout
+                    if response == 'login':
+                        """
+                            condition to login an existing user
+                        """
+                        username = self.waitMessage(conn, '\nlogin: ')
 
-                #verify is logout was succeful
-                if response == successMsg('logged out succefully'):
-                    prefix = self.setPrefix(account)
+                        password = self.waitMessage(conn, 'password: ' + displayColor('black'))
+                        self.sendMessage(conn, displayColor('white'))
 
+                        #if there is no user logged, create User instance
+                        if account.user == '':
+                            account.user = User(username, password)
 
+                        response = account.login() #realizes login
 
-            if response == 'create user':
-                """
-                    condition to create a new user
-                """
+                        #verify if login was succeful
+                        if response != successMsg('logged in succefully'):
+                            if response != errorMsg('you are already logged in'):
+                                account.user = ''
 
-                #verify if there is user logged in this client
-                if account.user != '':
-                    response = errorMsg('you cannot create new account while logged')
-                else:
-                    username = self.waitMessage(conn, '\nlogin: ')
-
-                    password = self.waitMessage(conn, 'password: ' + displayColor('black'))
-                    self.sendMessage(conn, displayColor('white'))
-
-                    passwordConfirmation = self.waitMessage(conn, 'confirm password: ' + displayColor('black'))
-                    self.sendMessage(conn, displayColor('white'))
-
-                    if password != passwordConfirmation:
-                        response = errorMsg('password does not match its confirmation')
-                    else:
-                        user = User(username, password)
-                        response = self.userController.create(user) #create user
+                        prefix = setPrefix(account)
 
 
-            if response == 'exit':
-                """
-                    condition to exit the app by logging out
-                    and breaking the loop
-                """
-                self.sendMessage(conn, clearScreen())
-                self.sendMessage(conn, errorMsg('goodbye'))
+                    
+                    if response == 'logout':
+                        """
+                            condition to loggout a logged user
+                        """
+                        response = account.logout() #realizes logout
 
-                #verify if user is not logged
-                if account.user != '':
-                    username = account.user.username
-                response = account.logout()
-
-                if response == successMsg('logged out succefully'):
-                    self.sendMessage(conn, username + ' ' + response +'\n')
-
-                self.closeConnection(conn, addr)
-                break
-
-            self.sendMessage(conn, response) #send the response back to the client
+                        #verify is logout was succeful
+                        if response == successMsg('logged out succefully'):
+                            prefix = setPrefix(account)
 
 
-        
-    def setPrefix(self, account):
-        """
-            prefix is the room and user resume shown in client
-            to indicade current user and room
-            default is 'none@unkown', where none is for room and
-            unknown for user
-        """
-        if account.user == '':
-            room = displayColor('cyan') + 'none'
-            username = displayColor('cyan') + 'unknown'  
-        else:
-            if account.user.room == '':
-                room = displayColor('cyan') + 'none'
-            else:
-                room = displayColor('magenta') + account.user.room
 
-            username = displayColor('yellow') + account.user.username
+                    if response == 'create user':
+                        """
+                            condition to create a new user
+                        """
 
-        prefix = room + '@' + username + displayColor('white') + '> '
+                        #verify if there is user logged in this client
+                        if account.user != '':
+                            response = errorMsg('you cannot create new account while logged')
+                        else:
+                            username = self.waitMessage(conn, '\nlogin: ')
 
-        return prefix
+                            password = self.waitMessage(conn, 'password: ' + displayColor('black'))
+                            self.sendMessage(conn, displayColor('white'))
+
+                            passwordConfirmation = self.waitMessage(conn, 'confirm password: ' + displayColor('black'))
+                            self.sendMessage(conn, displayColor('white'))
+
+                            if password != passwordConfirmation:
+                                response = errorMsg('password does not match its confirmation')
+                            else:
+                                user = User(username, password)
+                                response = self.userController.create(user) #create user
+
+                    
+                    if response == 'create room':
+                        """
+                            condition to create new room
+                        """
+                        if account.user == '':
+                            response = errorMsg('you need to log in to create a room')
+                        else:
+                            name = self.waitMessage(conn, '\nroom name: ')
+                            print(name)
+                            print(account.user.username)
+                            room = Room(name, account.user.username)
+                            print(room)
+                            # print(room)
+                            print('aaaa')
+                            response = self.roomController.create(sexoooooooooooooo)
+
+
+                    if response == 'exit':
+                        """
+                            condition to exit the app by logging out
+                            and breaking the loop
+                        """
+                        self.sendMessage(conn, clearScreen())
+                        self.sendMessage(conn, errorMsg('goodbye'))
+
+                        #verify if user is not logged
+                        if account.user != '':
+                            username = account.user.username
+                        response = account.logout()
+
+                        if response == successMsg('logged out succefully'):
+                            self.sendMessage(conn, username + ' ' + response +'\n')
+
+                        self.closeConnection(conn, addr)
+                        break
+
+                    self.sendMessage(conn, response) #send the response back to the client
+
+
+            except:
+                continue
+
+
+
+
+
+    def broadcast(self, conn, message):
+        for client in self.clients:
+            if client != conn:
+                try:
+                    self.sendMessage(client, message)
+                except:
+                    client.close()
+                    self.remove(client)
+
+    def remove(self, conn):
+        if conn in self.clients:
+            self.clients.remove(conn)
+
 
 
     def sendMessage(self, conn, message):
@@ -222,7 +248,9 @@ class Server:
             conn.close()
             print('\n' + str(addr) + ' disconnected')
 
-    def closeSocket(self):
+    def closeServer(self):
+        self.userController.logoutAll()
+
         #closes server's socket
         self.socket.close()
 
