@@ -1,17 +1,28 @@
 from src.middlewares.display import *
 import src.views.UserView as userView
+from src.models.UserRepository import *
 
 def renderOne(room):
+    userRepository = UserRepository()
+
     name = displayColor('yellow') + room['name'] + displayColor('white')
 
-    admin = displayColor('cyan') + room['admin'] + displayColor('white')
+    users = userRepository.fetchAll()
+    userList = displayColor('magenta') + ''
+    if len(users) != 0:
+        i = 0
+        for user in users:
+            if user['room'] == room['name'] and i == 0:
+                userList += user['username'] + '\n'
+                i += 1
+            elif user['room'] == room['name'] and i > 0:
+                userList += '               ' + user['username'] + '\n'
 
-    users = userView.renderMany(room['users'])
+    userList += displayColor('white') + ''
 
     room = f"""
         name: {name}
-        admin: {admin}
-        users: {users}
+        users: {userList}
     """
     return room
 

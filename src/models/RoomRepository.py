@@ -28,7 +28,6 @@ class RoomRepository:
     def save(self, room):
         room = room.getRoom()
         with open("src/data/rooms.json", "r") as file:
-            print(room)
             data = json.load(file) 
             data.append(room) 
 
@@ -38,19 +37,24 @@ class RoomRepository:
 
 
     def update(self, room): 
-        name = room.name
+        name = room['name']
 
         with open("src/data/rooms.json", "r") as file:
             data = json.load(file)
-    
+        print(data)
+        print(room)
         lenght = len(data)
         for i in range(lenght):
             if data[i]['name'] == name:
-                data[i] = room.getRoom()
+                data[i] = room
 
+        print(data)
         with open("src/data/rooms.json", "w") as file:
-            dataString = json.dumps(data, indent = 4) 
-            file.write(dataString)
+            #dataString = json.dumps(data, indent = 4) 
+            file.write(data)
+
+        print(data)
+        
 
 
     def delete(self, room): 

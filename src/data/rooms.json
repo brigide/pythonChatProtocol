@@ -1,7 +1,8 @@
 [
     {
-        "name": "myRoom",
-        "admin": "brigide",
-        "users": []
+        "name": "myRoom"
+    },
+    {
+        "name": "room2"
     }
 ]

@@ -16,16 +16,24 @@ class Room:
         }
         return room
 
+    def addUser(self, user):
+        self.users.append(user)
+
+    def removeUser(self, user):
+        self.users.remove(user)
+
+    def addConn(self, conn):
+        self.conns.append(conn)
+
+    def removeConn(self, conn):
+        self.conns.remove(conn)
+
     @property
     def name(self):
-        print(self.name)
-        print(self._name)
         return self._name
 
     @name.setter
     def name(self, name):
-        print(self.name)
-        print(self._name)
         self._name = name
 
     @property
@@ -38,11 +46,7 @@ class Room:
 
     @property
     def users(self):
-        return self.isLogged
-
-    @users.setter
-    def users(self, user):
-        self.users.append(user)
+        return self.users
 
     @property
     def conns(self):

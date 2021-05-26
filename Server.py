@@ -10,6 +10,7 @@ from src.middlewares.requestHandler import *
 from src.controllers.AccountController import *
 from src.controllers.UserController import *
 from src.controllers.RoomController import *
+from src.models.RoomRepository import *
 from src.models.User import *
 from src.models.Room import *
 
@@ -19,6 +20,7 @@ class Server:
     """
     userController = UserController() #create instance of user controller
     roomController = RoomController() #create instance of room controller
+    roomRepository = RoomRepository()
 
     def __init__(self, host, port):
         """
@@ -28,6 +30,7 @@ class Server:
         self.port = port
         self.socket = ""
         self.clients = [] #list of connected clients
+        self.users = []
 
     def createSocket(self):
         """
@@ -66,10 +69,11 @@ class Server:
         conn, addr = self.socket.accept()
         print('\n' + str(addr) + ' connected')
         self.clients.append(conn) #add new connection to server's client list
-        return conn, addr
+        self.users.append('unknown')
+        return conn, addr, len(self.users)
 
     
-    def run(self, conn, addr):
+    def run(self, conn, addr, pos):
         """
             this function handles every client from any thread
             and return it's response
@@ -94,10 +98,10 @@ class Server:
                     if account.user != '':
                         message = displayColor('magenta') + account.user.username
                         message += displayColor('white') + '> ' + request
-                        print(message)
-                        self.broadcast(conn, message)
+                        #print(message)
+                        #self.broadcast(conn, message)
 
-                    response = requestHandler(request) #handles and filters the request
+                    response = requestHandler(request, account, conn, self.clients) #handles and filters the request
 
 
                     if response == 'login':
@@ -114,6 +118,7 @@ class Server:
                             account.user = User(username, password)
 
                         response = account.login() #realizes login
+                        self.users[pos] = account.user.username
 
                         #verify if login was succeful
                         if response != successMsg('logged in succefully'):
@@ -128,7 +133,11 @@ class Server:
                         """
                             condition to loggout a logged user
                         """
+                        for i in range(len(self.users)):
+                            if self.users[i] == account.user.username:
+                                self.users[i] = 'unknown'
                         response = account.logout() #realizes logout
+
 
                         #verify is logout was succeful
                         if response == successMsg('logged out succefully'):
@@ -174,7 +183,27 @@ class Server:
                             print(room)
                             # print(room)
                             print('aaaa')
-                            response = self.roomController.create(sexoooooooooooooo)
+                            response = self.roomController.create(room)
+
+
+                    if response[:4] == 'join':
+                        name = response[5:]
+
+                        account.user.room = name
+                        self.userController.update(account.user)
+                        
+
+                        self.sendMessage(conn, clearScreen())
+                        message = displayColor('green') + 'you have joined ' + name + '\n\n' + displayColor('white')
+                        self.sendMessage(conn, message)
+
+                        #while True:
+                        try:
+                            message = self.waitMessage(conn, '> ')
+                            if message:
+                                self.broadcast(conn, name, message)
+
+                            
 
 
                     if response == 'exit':
@@ -206,19 +235,36 @@ class Server:
 
 
 
-    def broadcast(self, conn, message):
+    def broadcast(self, conn, room, message):
+        msg = displayColor('cyan') + message.center(100) + '\n' + displayColor('white')
+
+
+        self.sendMessage(conn, msg)
+
+        for i in range(len(self.clients)):
+            if self.clients[i] != conn:
+                user = self.userController.show(self.users[i])
+                if user['room'] == room:
+                    try:
+                        self.sendMessage(client, message)
+                    except:
+                        self.clients[i].close()
+                        self.remove(client)
+
         for client in self.clients:
             if client != conn:
                 try:
+                    if i in range
                     self.sendMessage(client, message)
                 except:
                     client.close()
                     self.remove(client)
 
     def remove(self, conn):
-        if conn in self.clients:
-            self.clients.remove(conn)
-
+        for i in range(len(self.clients)):
+            if self.clients == conn:
+                self.clients.pop(i)
+                self.users.pop(i)
 
 
     def sendMessage(self, conn, message):
@@ -243,10 +289,14 @@ class Server:
         """
             function to close client connection
         """
-        if conn in self.clients:
-            self.clients.remove(conn)
-            conn.close()
-            print('\n' + str(addr) + ' disconnected')
+
+        for i in range(len(self.clients)):
+            if self.clients == conn:
+                self.clients.pop(i)
+                self.users.pop(i)
+
+        conn.close()
+        print('\n' + str(addr) + ' disconnected')
 
     def closeServer(self):
         self.userController.logoutAll()

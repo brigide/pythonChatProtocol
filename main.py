@@ -24,9 +24,9 @@ def main():
     #main loop to accept many connections
     while True:
         try:
-            conn, addr = server.acceptConnection() #get connection class and address from new client
+            conn, addr, pos = server.acceptConnection() #get connection class and address from new client
   
-            _thread.start_new_thread(server.run, (conn, addr)) #start new thread for client
+            _thread.start_new_thread(server.run, (conn, addr, pos)) #start new thread for client
 
         except KeyboardInterrupt:
             break

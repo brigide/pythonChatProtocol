@@ -36,7 +36,7 @@ class RoomController:
 
     
     def update(self, room):
-        if self.roomRepository.findByName(room.name) == None:
+        if self.roomRepository.findByName(room['name']) == None:
             return errorMsg('room not found')
         
         self.roomRepository.update(room)
