@@ -125,6 +125,7 @@ class Server:
                             if response != errorMsg('you are already logged in'):
                                 account.user = ''
 
+                        print(account.user.username)
                         prefix = setPrefix(account)
 
 
@@ -197,11 +198,14 @@ class Server:
                         message = displayColor('green') + 'you have joined ' + name + '\n\n' + displayColor('white')
                         self.sendMessage(conn, message)
 
-                        #while True:
-                        try:
-                            message = self.waitMessage(conn, '> ')
-                            if message:
-                                self.broadcast(conn, name, message)
+                        while True:
+                            try:
+                                message = self.waitMessage(conn, '> ')
+                                if message:
+                                    self.broadcast(conn, name, message, account.user.username)
+                        
+                            except:
+                                continue
 
                             
 
@@ -251,14 +255,6 @@ class Server:
                         self.clients[i].close()
                         self.remove(client)
 
-        for client in self.clients:
-            if client != conn:
-                try:
-                    if i in range
-                    self.sendMessage(client, message)
-                except:
-                    client.close()
-                    self.remove(client)
 
     def remove(self, conn):
         for i in range(len(self.clients)):
