@@ -70,7 +70,7 @@ class Server:
         print('\n' + str(addr) + ' connected')
         self.clients.append(conn) #add new connection to server's client list
         self.users.append('unknown')
-        return conn, addr, len(self.users)
+        return conn, addr, len(self.users) - 1
 
     
     def run(self, conn, addr, pos):
@@ -118,14 +118,15 @@ class Server:
                             account.user = User(username, password)
 
                         response = account.login() #realizes login
-                        self.users[pos] = account.user.username
+
+                        if account.user != '':
+                            self.users[pos] = account.user.username
 
                         #verify if login was succeful
                         if response != successMsg('logged in succefully'):
                             if response != errorMsg('you are already logged in'):
                                 account.user = ''
 
-                        print(account.user.username)
                         prefix = setPrefix(account)
 
 
@@ -198,14 +199,18 @@ class Server:
                         message = displayColor('green') + 'you have joined ' + name + '\n\n' + displayColor('white')
                         self.sendMessage(conn, message)
 
+                        welcomeMessage = 'joined the room!'
+                        self.broadcast(conn, name, welcomeMessage, account.user.username, True)
+
                         while True:
                             try:
-                                message = self.waitMessage(conn, '> ')
+                                prefix = displayColor('cyan') + ''
+                                message = self.waitMessage(conn, prefix)
                                 if message:
                                     self.broadcast(conn, name, message, account.user.username)
                         
-                            except:
-                                continue
+                            except Exception as error:
+                                print(error)
 
                             
 
@@ -232,28 +237,36 @@ class Server:
                     self.sendMessage(conn, response) #send the response back to the client
 
 
-            except:
-                continue
+            except Exception as error:
+                print(error)
 
 
 
 
 
-    def broadcast(self, conn, room, message):
-        msg = displayColor('cyan') + message.center(100) + '\n' + displayColor('white')
+    def broadcast(self, conn, room, message, username, warning = False):
+        # msg = displayColor('cyan') + message.center(100) + '\n' + displayColor('white')
 
 
-        self.sendMessage(conn, msg)
+        # if warning == False:
+        #     self.sendMessage(conn, msg)
 
         for i in range(len(self.clients)):
             if self.clients[i] != conn:
                 user = self.userController.show(self.users[i])
                 if user['room'] == room:
                     try:
-                        self.sendMessage(client, message)
+                        prefix = displayColor('yellow') + username + displayColor('white') + '> '
+                        message = prefix + message + '\n'
+                        if warning == False:
+                            prefix = displayColor('yellow') + username + displayColor('white') + '> '
+                            message = prefix + message + '\n'
+                        else:
+                            message = displayColor('blue') + username  + ' ' + message + displayColor('white') + '\n'
+                        self.sendMessage(self.clients[i], message)
                     except:
                         self.clients[i].close()
-                        self.remove(client)
+                        self.remove(self.clients[i])
 
 
     def remove(self, conn):
