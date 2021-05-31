@@ -196,7 +196,10 @@ class Server:
                         
 
                         self.sendMessage(conn, clearScreen())
-                        message = displayColor('green') + 'you have joined ' + name + '\n\n' + displayColor('white')
+                        message = displayColor('green') + 'you have joined ' + name + displayColor('white')
+                        self.sendMessage(conn, message)
+
+                        message = 'type /exit to leave room\n\n'
                         self.sendMessage(conn, message)
 
                         welcomeMessage = 'joined the room!'
@@ -204,9 +207,18 @@ class Server:
 
                         while True:
                             try:
-                                prefix = displayColor('cyan') + ''
-                                message = self.waitMessage(conn, prefix)
+                                message = self.waitMessage(conn)
+                               
                                 if message:
+                                    if message == '/exit':
+                                        message = account.user.username + ' left the room\n'
+                                        message = displayColor('red') + '\n' + message
+                                        self.broadcast(conn, name, message, account.user.username, True)
+                                        account.user.room = ""
+                                        self.userController.update(account.user)
+                                        response = 'left ' + name
+                                        break
+
                                     self.broadcast(conn, name, message, account.user.username)
                         
                             except Exception as error:
@@ -256,11 +268,9 @@ class Server:
                 user = self.userController.show(self.users[i])
                 if user['room'] == room:
                     try:
-                        prefix = displayColor('yellow') + username + displayColor('white') + '> '
-                        message = prefix + message + '\n'
                         if warning == False:
                             prefix = displayColor('yellow') + username + displayColor('white') + '> '
-                            message = prefix + message + '\n'
+                            message = prefix + message
                         else:
                             message = displayColor('blue') + username  + ' ' + message + displayColor('white') + '\n'
                         self.sendMessage(self.clients[i], message)
