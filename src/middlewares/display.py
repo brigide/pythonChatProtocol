@@ -120,3 +120,24 @@ def unknownArgMsg():
     unknownArgMsg = '\n' + errorMsg('unknown arguments for this command')
     unknownArgMsg += 'please use "help" to learn more about commands\n'
     return unknownArgMsg
+
+
+def helpMsg():
+    message = setTitle('all commands')
+    message += displayColor('cyan') + 'clear: ' + displayColor('white') + 'clear last commands\n'
+    message += displayColor('cyan') + 'exit: ' + displayColor('white') + 'close app\n'
+    message += '\n'
+    message += displayColor('cyan') + 'uindex: ' + displayColor('white') + 'list all users\n'
+    message += displayColor('cyan') + 'ulindex: ' + displayColor('white') + 'list all online users\n'
+    message += displayColor('cyan') + 'ushow username: ' + displayColor('white') + 'list specific user\n'
+    message += '\n'
+    message += displayColor('cyan') + 'rindex: ' + displayColor('white') + 'list all rooms\n'
+    message += displayColor('cyan') + 'rshow roomname: ' + displayColor('white') + 'list specific room\n'
+    message += '\n'
+    message += displayColor('cyan') + 'create user: ' + displayColor('white') + 'create new user\n' 
+    message += displayColor('cyan') + 'login: ' + displayColor('white') + 'login w/ user\n'
+    message += displayColor('cyan') + 'logout: ' + displayColor('white') + 'logout w/ user\n'
+    message += '\n'
+    message += displayColor('cyan') + 'join roomname: ' + displayColor('white') + 'enter room to chat\n'
+    message += displayColor('cyan') + '/exit: ' + displayColor('white') + 'exit current room\n'
+    return message

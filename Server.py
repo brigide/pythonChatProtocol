@@ -262,9 +262,11 @@ class Server:
 
         # if warning == False:
         #     self.sendMessage(conn, msg)
-
+        print(self.clients)
+        print(self.users)
         for i in range(len(self.clients)):
             if self.clients[i] != conn:
+                print(i)
                 user = self.userController.show(self.users[i])
                 if user['room'] == room:
                     try:

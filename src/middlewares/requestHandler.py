@@ -28,6 +28,13 @@ def requestHandler(request, account, conn, clients):
 
         return 'exit'
 
+    if request[0] == 'help':
+
+        if len(request) > 1:
+            return tooManyArgs()
+
+        return helpMsg()
+
     
     if request[0] == 'login':
 
